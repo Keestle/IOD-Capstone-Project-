@@ -1,0 +1,32 @@
+{
+  "name": "nickelnomad",
+  "version": "1.0.0",
+  "description": "IOD Capstone Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Keestle/IOD-Capstone-Project-.git"
+  },
+  "keywords": [
+    "personal",
+    "finance",
+    "inflaton",
+    "guide"
+  ],
+  "author": "Ernie Lim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Keestle/IOD-Capstone-Project-/issues"
+  },
+  "homepage": "https://github.com/Keestle/IOD-Capstone-Project-#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "mongoose": "^8.2.0",
+    "nodemon": "^3.1.0"
+  }
+}
