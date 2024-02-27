@@ -16,7 +16,7 @@ router.put("/update", (req, res) => {
 });
 
 router.delete("/delete", (req, res) => {
-  Controllers.budgetCalculatorController.deleteBudget(req, res);
+  Controllers.budgetCalculatorController.deleteBudget(req.body, res);
 });
 
 module.exports = router;

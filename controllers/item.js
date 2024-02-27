@@ -4,7 +4,7 @@ let Models = require("../models");
 //Abstraction: Create CRUD operations for specific items in the budget - handling logic
 
 //C - Create the item
-const createItem = (res, data) => {
+const createItem = (data, res) => {
   console.log(data);
   new Models.item(data)
     .save()
@@ -34,7 +34,7 @@ const updateItem = (newData, res) => {
     .findByIdAndUpdate(_id, updatedData, { new: true })
     .then((updatedItem) => {
       if (!updateItem) {
-        res.send({ result: 404, error: "No budget with this Id found." });
+        res.send({ result: 404, error: "No item with this Id found." });
       } else {
         res.send({ result: 200, data: updatedItem });
       }

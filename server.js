@@ -5,7 +5,7 @@ require("dotenv").config();
 require("./dbConnect");
 let userRoutes = require("./routes/userRoutes");
 let budgetCalculatorRoutes = require("./routes/budgetCalculatorRoutes");
-let itemRoutes = require("./routes/budgetCalculatorRoutes");
+let itemRoutes = require("./routes/itemRoutes");
 
 // parse requests of content-type - application/json
 app.use(express.json());
