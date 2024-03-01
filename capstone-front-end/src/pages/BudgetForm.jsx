@@ -66,7 +66,7 @@ const initialBudgetRows = Array.from({ length: 7 }, generateBudgetItem);
 
 // Buttons on the top of the budget form.
 function EditToolbar(props) {
-  const { setRowModesModel } = props;
+  const { rows, setRows, setRowModesModel } = props;
 
   const handleClick = () => {
     const newItem = generateEmptyBudgetItem();
@@ -79,7 +79,6 @@ function EditToolbar(props) {
 
   // Save button: To do - If saved once then change save budget to PUT method with the current budget.
   const [budgetName, setBudgetName] = React.useState("");
-  const [rows, setRows] = React.useState(initialBudgetRows);
 
   const saveBudget = async () => {
     try {
@@ -279,7 +278,7 @@ export default function FullFeaturedCrudGrid() {
           footer: BudgetTotals,
         }}
         slotProps={{
-          toolbar: { setRows, setRowModesModel },
+          toolbar: { rows, setRows, setRowModesModel },
           footer: { rows },
         }}
       />

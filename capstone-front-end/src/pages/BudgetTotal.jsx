@@ -3,13 +3,19 @@ import React from "react";
 
 const BudgetTotals = ({ rows }) => {
   console.log("Rows:", rows);
-  const totalEstimatedCost = rows
-    ? rows.reduce((total, row) => total + (row.estimateCost || 0), 0)
-    : 0;
-  const totalActualCost = rows
-    ? rows.reduce((total, row) => total + (row.actualCost || 0), 0)
-    : 0;
 
+  const isRowsValid = Array.isArray(rows) && rows.length > 0;
+
+  const totalEstimatedCost = rows.reduce(
+    (total, row) => total + (Number(row.estimateCost) || 0.0),
+    0.0
+  );
+
+  const totalActualCost = rows.reduce(
+    (total, row) => total + (Number(row.actualCost) || 0.0),
+    0.0
+  );
+  console.log("The total estmated cost is " + totalEstimatedCost);
   return (
     <div
       style={{ display: "flex", justifyContent: "flex-end", padding: "10px" }}
