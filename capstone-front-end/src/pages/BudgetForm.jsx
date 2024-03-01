@@ -27,8 +27,6 @@ import axios from "axios";
 const generateEmptyBudgetItem = () => {
   return {
     id: randomId(), // itemId
-    budgetId: randomId(),
-    userId: randomId(),
     itemName: "",
     itemLink: "",
     estimateCost: "",
@@ -52,8 +50,6 @@ const generateBudgetItem = () => {
   ];
   return {
     id: randomId(), // itemId
-    budgetId: randomId(),
-    userId: randomId(),
     itemName: randomArrayItem(itemNameOptions),
     itemLink: "",
     estimateCost: parseFloat((Math.random() * 10).toFixed(2)), // Adjust as needed
@@ -88,7 +84,6 @@ function EditToolbar(props) {
       const formattedData = {
         budgetName: budgetName,
         items: rows.map((item) => ({
-          budgetId: item.budgetId,
           itemName: item.itemName,
           estimateCost: item.estimateCost,
           actualCost: item.actualCost,
