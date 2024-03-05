@@ -1,39 +1,21 @@
 import * as React from "react";
+import { useEffect } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
-import TextField from "@mui/material/TextField";
 import BudgetTotals from "./BudgetTotal";
+import EditToolbar from "./BudgetFormManipulation/EditToolbar";
 import {
   GridRowModes,
   DataGrid,
-  GridToolbarContainer,
   GridActionsCellItem,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
-import {
-  randomCreatedDate,
-  randomTraderName,
-  randomId,
-  randomArrayItem,
-} from "@mui/x-data-grid-generator";
+import { randomId, randomArrayItem } from "@mui/x-data-grid-generator";
 import axios from "axios";
 
-// Function to add empty rows to continue budget list.
-const generateEmptyBudgetItem = () => {
-  return {
-    id: randomId(), // itemId
-    itemName: "",
-    itemLink: "",
-    estimateCost: "",
-    actualCost: "",
-    isNew: true,
-  };
-};
 // We will create a function to handle the intial population of items in our budget form
 const generateBudgetItem = () => {
   const itemNameOptions = [
@@ -53,87 +35,54 @@ const generateBudgetItem = () => {
     itemName: randomArrayItem(itemNameOptions),
     itemLink: "",
     estimateCost: parseFloat((Math.random() * 10).toFixed(2)), // Adjust as needed
-    actualCost: "",
+    actualCost: 0,
     isNew: true,
   };
 };
+// Fetch all budgets for user with id = 65dc2e9233c3c13bc2b5755
+// select the first budget in the collection
 
-const initialBudgetRows = Array.from({ length: 7 }, generateBudgetItem);
+// Actually - Easier if fetch budget with id= 65e524faa43d27e6815b9e89
+// Set intialbudgetrows to be all the items from that collection for that user.
+const BudgetComponent = () => {
+  const [collections, setCollections] = React.useState(null);
 
-// Buttons on the top of the budget form.
-function EditToolbar(props) {
-  const { rows, setRows, setRowModesModel } = props;
-
-  const handleClick = () => {
-    const newItem = generateEmptyBudgetItem();
-    setRows((oldRows) => [...oldRows, newItem]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [newItem.id]: { mode: GridRowModes.Edit, fieldToFocus: "itemName" },
-    }));
-  };
-
-  // Save button: To do - If saved once then change save budget to PUT method with the current budget.
-  const [budgetName, setBudgetName] = React.useState("");
-
-  const saveBudget = async () => {
+  // Fetch function for budget rows from my budget.
+  const fetchInitialBudgetRows = async () => {
     try {
-      const url = "http://localhost:3000/api/budgetCalculator/create";
-      const method = "POST"; // Assuming it's an update; change as needed
+      const budgetId = "65e524faa43d27e6815b9e89";
+      const response = await axios.get(`/api/budgetCalculator/${budgetId}`);
 
-      const formattedData = {
-        budgetName: budgetName,
-        items: rows.map((item) => ({
-          itemName: item.itemName,
-          estimateCost: item.estimateCost,
-          actualCost: item.actualCost,
-        })),
-      };
-
-      const response = await axios({
-        method,
-        url,
-        headers: {
-          "Content-Type": "application/json", // Adjust based on your API requirements
-        },
-        data: formattedData,
-      });
-
-      console.log("Budget saved successfully:", response.data);
-
-      // Optionally, you can update your UI or state based on the response if needed
+      if (Array.isArray(response.data.data)) {
+        return response.data.data.map((item) => ({
+          ...item,
+          isNew: false,
+        }));
+      } else {
+        console.error(
+          "Invalid response format - data is not an array:",
+          response.data
+        );
+        return null;
+      }
     } catch (error) {
-      console.error("Error saving budget:", error.message);
-      // Optionally, handle errors and update your UI or show a notification
+      console.error("Error fetching initial budget rows:", error);
+      return null;
     }
   };
 
-  // Ernie Notes: Make sure the buttons on the top of the budget is dynamic. Only budget name has this feat. at the moment.
-  return (
-    <GridToolbarContainer>
-      <Box sx={{ flexGrow: 1 }}>
-        <TextField
-          label="Enter budget name"
-          variant="outlined"
-          style={{ marginRight: "350px" }}
-          value={budgetName}
-          onChange={(e) => setBudgetName(e.target.value)}
-        />
-      </Box>
-      <Box>
-        <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-          Add budget item
-        </Button>
-        <Button color="primary" startIcon={<SaveIcon />} onClick={saveBudget}>
-          Save Budget
-        </Button>
-      </Box>
-    </GridToolbarContainer>
-  );
-}
+  useEffect(() => {
+    fetchInitialBudgetRows().then((data) => {
+      setCollections(data);
+    });
+  }, []);
 
-export default function FullFeaturedCrudGrid() {
-  const [rows, setRows] = React.useState(initialBudgetRows);
+  // Render your component using the 'collections' state
+  return <FullFeaturedCrudGrid initialRows={collections} />;
+};
+
+function FullFeaturedCrudGrid({ initialRows }) {
+  const [rows, setRows] = React.useState(initialRows || []);
   const [rowModesModel, setRowModesModel] = React.useState({});
 
   const handleRowEditStop = (params, event) => {
@@ -280,3 +229,4 @@ export default function FullFeaturedCrudGrid() {
     </Box>
   );
 }
+export default BudgetComponent;

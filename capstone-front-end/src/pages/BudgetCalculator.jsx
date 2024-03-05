@@ -1,12 +1,14 @@
 import React from "react";
 import ResponsiveAppBar from "./Header";
-import FullFeaturedCrudGrid from "./BudgetForm";
+import BudgetComponent from "./BudgetForm";
+import FormDialog from "./UserManager";
 
 function BudgetCalculator() {
   return (
     <div>
+      <FormDialog />
       <ResponsiveAppBar />
-      <FullFeaturedCrudGrid />
+      <BudgetComponent />
     </div>
   );
 }
