@@ -27,6 +27,17 @@ const getBudget = (res) => {
     });
 };
 
+const getBudgetbyId = (req, res) => {
+  // finds all budgets
+  Models.budgetCalculator
+    .findById(req.params.id)
+    .then((data) => res.send({ result: 200, data: data }))
+    .catch((err) => {
+      console.log(err);
+      res.send({ result: 500, error: err.message });
+    });
+};
+
 //U - Update the budget
 const updateBudget = (newData, res) => {
   const { _id, updatedData } = newData;
@@ -46,9 +57,9 @@ const updateBudget = (newData, res) => {
 };
 
 //D - Delete the budget
-const deleteBudget = (budgetId, res) => {
+const deleteBudget = (req, res) => {
   Models.budgetCalculator
-    .findByIdAndDelete(budgetId)
+    .findByIdAndDelete(req.params.id)
     .then((deletedBudget) => {
       if (!deletedBudget) {
         res.send({ result: 500, error: "No budget with this Id found." });
@@ -65,6 +76,7 @@ const deleteBudget = (budgetId, res) => {
 module.exports = {
   createBudget,
   getBudget,
+  getBudgetbyId,
   updateBudget,
   deleteBudget,
 };

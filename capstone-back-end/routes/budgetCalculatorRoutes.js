@@ -8,6 +8,10 @@ router.get("/", (req, res) => {
   Controllers.budgetCalculatorController.getBudget(res);
 });
 
+router.get("/:id", (req, res) => {
+  Controllers.budgetCalculatorController.getBudgetbyId(req, res);
+});
+
 router.post("/create", async (req, res) => {
   // Controllers.budgetCalculatorController.createBudget(req.body, res);
   try {
@@ -32,8 +36,8 @@ router.put("/update", (req, res) => {
   Controllers.budgetCalculatorController.updateBudget(req.body, res);
 });
 
-router.delete("/delete", (req, res) => {
-  Controllers.budgetCalculatorController.deleteBudget(req.body, res);
+router.delete("/:id", (req, res) => {
+  Controllers.budgetCalculatorController.deleteBudget(req, res);
 });
 
 module.exports = router;
