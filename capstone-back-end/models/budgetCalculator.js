@@ -5,8 +5,8 @@ const Schema = mongoose.Schema;
 const itemSchema = new Schema({
   itemName: { type: String },
   itemLink: { type: String },
-  estimateCost: { type: String, required: true },
-  actualCost: { type: String, required: true },
+  estimateCost: { type: Number, required: true },
+  actualCost: { type: Number, required: true },
 });
 
 const budgetCalculatorSchema = new Schema({

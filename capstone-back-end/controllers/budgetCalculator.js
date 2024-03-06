@@ -28,7 +28,6 @@ const getBudget = (res) => {
 };
 
 const getBudgetbyId = (req, res) => {
-  // finds all budgets
   Models.budgetCalculator
     .findById(req.params.id)
     .then((data) => res.send({ result: 200, data: data }))
