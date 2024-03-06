@@ -6,39 +6,16 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import BudgetTotals from "./BudgetTotal";
-import EditToolbar from "./BudgetFormManipulation/EditToolbar";
+import EditToolbar from "./EditToolbar";
 import {
   GridRowModes,
   DataGrid,
   GridActionsCellItem,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
-import { randomId, randomArrayItem } from "@mui/x-data-grid-generator";
 import axios from "axios";
+import saveBudget from "./SaveFunctionality";
 
-// We will create a function to handle the intial population of items in our budget form
-const generateBudgetItem = () => {
-  const itemNameOptions = [
-    "Toothpaste",
-    "Bread",
-    "Laundry Detergent",
-    "Shampoo",
-    "Milk",
-    "T-shirt",
-    "Dish Soap",
-    "Eggs",
-    "Toilet Paper",
-    "Hand Soap",
-  ];
-  return {
-    id: randomId(), // itemId
-    itemName: randomArrayItem(itemNameOptions),
-    itemLink: "",
-    estimateCost: parseFloat((Math.random() * 10).toFixed(2)), // Adjust as needed
-    actualCost: 0,
-    isNew: true,
-  };
-};
 // Fetch all budgets for user with id = 65dc2e9233c3c13bc2b5755
 // select the first budget in the collection
 
@@ -51,10 +28,12 @@ const BudgetComponent = () => {
   const fetchInitialBudgetRows = async () => {
     try {
       const budgetId = "65e524faa43d27e6815b9e89";
-      const response = await axios.get(`/api/budgetCalculator/${budgetId}`);
+      const response = await axios.get(
+        `http://localhost:3000/api/budgetCalculator/${budgetId}`
+      );
 
-      if (Array.isArray(response.data.data)) {
-        return response.data.data.map((item) => ({
+      if (Array.isArray(response.data.data.items)) {
+        return response.data.data.items.map((item) => ({
           ...item,
           isNew: false,
         }));
@@ -78,12 +57,21 @@ const BudgetComponent = () => {
   }, []);
 
   // Render your component using the 'collections' state
-  return <FullFeaturedCrudGrid initialRows={collections} />;
+  return (
+    <FullFeaturedCrudGrid
+      initialRows={collections}
+      budgetName={collections?.budgetName}
+    />
+  );
 };
 
-function FullFeaturedCrudGrid({ initialRows }) {
-  const [rows, setRows] = React.useState(initialRows || []);
+function FullFeaturedCrudGrid({ initialRows, budgetName }) {
+  const [rows, setRows] = React.useState([]);
   const [rowModesModel, setRowModesModel] = React.useState({});
+
+  React.useEffect(() => {
+    setRows(initialRows || []);
+  }, [initialRows]);
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -95,13 +83,15 @@ function FullFeaturedCrudGrid({ initialRows }) {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  // Ernie Notes: Modify this handleSaveClick to call the saveBudget function above.
-  const handleSaveClick = (id) => () => {
+  // TO-DO: External service - Save budget functionality.
+  const handleSaveClick = async (id, event) => {
+    event.stopPropagation();
+    await saveBudget(rows, budgetName);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row.id !== id));
+    setRows(rows.filter((row) => `${row._id}-${row.itemName}` !== id));
   };
 
   const handleCancelClick = (id) => () => {
@@ -110,15 +100,15 @@ function FullFeaturedCrudGrid({ initialRows }) {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = rows.find((row) => row.id === id);
+    const editedRow = rows.find((row) => row._id === id);
     if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
+      setRows(rows.filter((row) => row._id !== id));
     }
   };
 
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    setRows(rows.map((row) => (row._id === newRow._id ? updatedRow : row)));
     return updatedRow;
   };
 
@@ -165,7 +155,7 @@ function FullFeaturedCrudGrid({ initialRows }) {
               sx={{
                 color: "primary.main",
               }}
-              onClick={handleSaveClick(id)}
+              onClick={(event) => handleSaveClick(id, event)} // Pass the event to the function
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
@@ -212,6 +202,7 @@ function FullFeaturedCrudGrid({ initialRows }) {
       <DataGrid
         rows={rows}
         columns={columns}
+        getRowId={(row) => `${row._id}-${row.itemName}`}
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}

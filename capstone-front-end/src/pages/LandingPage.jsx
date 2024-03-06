@@ -6,7 +6,7 @@ export default function LandingPage() {
     <div className="Homepage">
       <ResponsiveAppBar />
       <h1>Nickel Nomad</h1>
-      <h3>Finance made simple.</h3>
+      <h3>Finances made simple.</h3>
     </div>
   );
 }

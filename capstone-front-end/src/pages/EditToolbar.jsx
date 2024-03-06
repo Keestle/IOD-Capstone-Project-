@@ -5,14 +5,13 @@ import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
 import TextField from "@mui/material/TextField";
 import { GridToolbarContainer } from "@mui/x-data-grid";
-import axios from "axios";
-import { randomId } from "@mui/x-data-grid-generator";
 import { GridRowModes } from "@mui/x-data-grid";
+import saveBudget from "./SaveFunctionality";
 
 // Function to add empty rows to continue budget list.
 const generateEmptyBudgetItem = () => {
   return {
-    id: randomId(), // itemId
+    _id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate a new random id
     itemName: "",
     itemLink: "",
     estimateCost: "",
@@ -22,48 +21,28 @@ const generateEmptyBudgetItem = () => {
 };
 function EditToolbar(props) {
   const { rows, setRows, setRowModesModel } = props;
+  const [budgetName, setBudgetName] = React.useState("");
 
   const handleClick = () => {
     const newItem = generateEmptyBudgetItem();
     setRows((oldRows) => [...oldRows, newItem]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [newItem.id]: { mode: GridRowModes.Edit, fieldToFocus: "itemName" },
+      [`${newItem._id}-${newItem.itemName}`]: {
+        mode: GridRowModes.Edit,
+        fieldToFocus: "itemName",
+      },
     }));
   };
 
-  // Save button: To do - If saved once then change save budget to PUT method with the current budget.
-  const [budgetName, setBudgetName] = React.useState("");
-
-  const saveBudget = async () => {
+  // TO-DO: Const handlesaveclick -call external module to save. (Build this)
+  const handleSaveClick = async () => {
     try {
-      const url = "http://localhost:3000/api/budgetCalculator/create";
-      const method = "POST"; // Assuming it's an update; change as needed
-
-      const formattedData = {
-        budgetName: budgetName,
-        items: rows.map((item) => ({
-          itemName: item.itemName,
-          estimateCost: item.estimateCost,
-          actualCost: item.actualCost,
-        })),
-      };
-
-      const response = await axios({
-        method,
-        url,
-        headers: {
-          "Content-Type": "application/json", // Adjust based on your API requirements
-        },
-        data: formattedData,
-      });
-
-      console.log("Budget saved successfully:", response.data);
-
-      // Optionally, you can update your UI or state based on the response if needed
+      await saveBudget(rows, budgetName);
+      // Optionally update UI or perform actions on successful save
     } catch (error) {
-      console.error("Error saving budget:", error.message);
-      // Optionally, handle errors and update your UI or show a notification
+      console.error("Error during save:", error.message);
+      // Optionally handle errors and update UI or show a notification
     }
   };
 
@@ -83,7 +62,11 @@ function EditToolbar(props) {
         <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
           Add budget item
         </Button>
-        <Button color="primary" startIcon={<SaveIcon />} onClick={saveBudget}>
+        <Button
+          color="primary"
+          startIcon={<SaveIcon />}
+          onClick={handleSaveClick}
+        >
           Save Budget
         </Button>
       </Box>
