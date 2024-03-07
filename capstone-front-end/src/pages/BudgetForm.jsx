@@ -23,6 +23,7 @@ import saveBudget from "./SaveFunctionality";
 // Set intialbudgetrows to be all the items from that collection for that user.
 const BudgetComponent = () => {
   const [collections, setCollections] = React.useState(null);
+  const [budgetName, setBudgetName] = React.useState("");
 
   // Fetch function for budget rows from my budget.
   const fetchInitialBudgetRows = async () => {
@@ -52,7 +53,13 @@ const BudgetComponent = () => {
 
   useEffect(() => {
     fetchInitialBudgetRows().then((data) => {
+      // Assuming the response includes budgetName directly or within a data object
+      const fetchedBudgetName = data?.budgetName || ""; // Use a fallback empty string if undefined
+
       setCollections(data);
+
+      console.log('Budgetname in useEffect after fetchInitialBudgetRows: ' + fetchedBudgetName)
+      setBudgetName(fetchedBudgetName);
     });
   }, []);
 
@@ -60,14 +67,17 @@ const BudgetComponent = () => {
   return (
     <FullFeaturedCrudGrid
       initialRows={collections}
-      budgetName={collections?.budgetName}
+      budgetName={budgetName}
+      setBudgetName={setBudgetName}
     />
   );
 };
 
-function FullFeaturedCrudGrid({ initialRows, budgetName }) {
+function FullFeaturedCrudGrid({ initialRows, budgetName, setBudgetName }) {
   const [rows, setRows] = React.useState([]);
   const [rowModesModel, setRowModesModel] = React.useState({});
+
+  console.log('Budget name in FullFeaturedCrudGrid: ' + budgetName);
 
   React.useEffect(() => {
     setRows(initialRows || []);
@@ -213,7 +223,7 @@ function FullFeaturedCrudGrid({ initialRows, budgetName }) {
           footer: BudgetTotals,
         }}
         slotProps={{
-          toolbar: { rows, setRows, setRowModesModel },
+          toolbar: { rows, setRows, setRowModesModel, budgetName, setBudgetName },
           footer: { rows },
         }}
       />

@@ -20,8 +20,30 @@ const generateEmptyBudgetItem = () => {
   };
 };
 function EditToolbar(props) {
-  const { rows, setRows, setRowModesModel } = props;
-  const [budgetName, setBudgetName] = React.useState("");
+  const { rows, setRows, setRowModesModel, budgetName, setBudgetName } = props;
+
+  // Local state for the input field to prevent re-rendering on every keystroke
+  const [localBudgetName, setLocalBudgetName] = React.useState(budgetName);
+
+  // Effect to synchronize local state with the parent state when the component mounts or the parent state changes
+  React.useEffect(() => {
+    setLocalBudgetName(budgetName);
+  }, [budgetName]);
+
+  const handleLocalChange = (event) => {
+    setLocalBudgetName(event.target.value);
+  };
+
+  const handleBlur = () => {
+    setBudgetName(localBudgetName);
+  };
+
+
+  console.log('Budget name in EditToolbar: ' + budgetName);
+
+  React.useEffect(() => {
+    console.log('Budget name in EditToolbar within useEffect: ' + budgetName);
+  }, []);
 
   const handleClick = () => {
     const newItem = generateEmptyBudgetItem();
@@ -54,8 +76,9 @@ function EditToolbar(props) {
           label="Enter budget name"
           variant="outlined"
           style={{ marginRight: "350px" }}
-          value={budgetName}
-          onChange={(e) => setBudgetName(e.target.value)}
+          value={localBudgetName}
+          onChange={handleLocalChange}
+          onBlur={handleBlur} // Update parent state when the input loses focus
         />
       </Box>
       <Box>
