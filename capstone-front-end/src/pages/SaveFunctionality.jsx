@@ -1,4 +1,5 @@
 import axios from "axios";
+import SimpleAlert from "./PopupSaveNotification";
 
 const saveBudget = async (
   rows,
@@ -44,6 +45,7 @@ const saveBudget = async (
     console.error("Error saving budget:", error.message);
     // Optionally, handle errors and update your UI or show a notification
   }
+  return <SimpleAlert />;
 };
 
 export default saveBudget;

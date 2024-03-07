@@ -16,16 +16,11 @@ import {
 import axios from "axios";
 import saveBudget from "./SaveFunctionality";
 
-// Fetch all budgets for user with id = 65dc2e9233c3c13bc2b5755
-// select the first budget in the collection
-
-// Actually - Easier if fetch budget with id= 65e524faa43d27e6815b9e89
-// Set intialbudgetrows to be all the items from that collection for that user.
 const BudgetComponent = () => {
   const [collections, setCollections] = React.useState(null);
   const [budgetName, setBudgetName] = React.useState("");
 
-  // Fetch function for budget rows from my budget.
+  // Set budgetId to be the ObjectId of thye budget created in MongoDb you which to fetch the intialbudgetrows from.
   const fetchInitialBudgetRows = async () => {
     try {
       const budgetId = "65e8139ae8d136442e7609d6";
@@ -39,7 +34,7 @@ const BudgetComponent = () => {
           isNew: false,
         }));
         let output = { ...response.data.data, items: mappedItems };
-        console.log('result of spread: ' + output);
+        console.log("result of spread: " + output);
         return output;
       } else {
         console.error(
@@ -61,9 +56,13 @@ const BudgetComponent = () => {
 
       setCollections(data.items);
 
-
-      console.log('data in useEffect after fetchInitialBudgetRows: ' + data.items)
-      console.log('Budgetname in useEffect after fetchInitialBudgetRows: ' + fetchedBudgetName)
+      console.log(
+        "data in useEffect after fetchInitialBudgetRows: " + data.items
+      );
+      console.log(
+        "Budgetname in useEffect after fetchInitialBudgetRows: " +
+          fetchedBudgetName
+      );
       setBudgetName(fetchedBudgetName);
     });
   }, []);
@@ -82,7 +81,7 @@ function FullFeaturedCrudGrid({ initialRows, budgetName, setBudgetName }) {
   const [rows, setRows] = React.useState([]);
   const [rowModesModel, setRowModesModel] = React.useState({});
 
-  console.log('Budget name in FullFeaturedCrudGrid: ' + budgetName);
+  console.log("Budget name in FullFeaturedCrudGrid: " + budgetName);
 
   React.useEffect(() => {
     setRows(initialRows || []);
@@ -228,7 +227,13 @@ function FullFeaturedCrudGrid({ initialRows, budgetName, setBudgetName }) {
           footer: BudgetTotals,
         }}
         slotProps={{
-          toolbar: { rows, setRows, setRowModesModel, budgetName, setBudgetName },
+          toolbar: {
+            rows,
+            setRows,
+            setRowModesModel,
+            budgetName,
+            setBudgetName,
+          },
           footer: { rows },
         }}
       />
