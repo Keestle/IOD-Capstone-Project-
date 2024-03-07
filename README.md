@@ -48,6 +48,7 @@ Step #7: Enter npm run dev in the terminal pointing to capstone-front-end folder
   ➜  Local:   http://localhost:8000/
   ➜  Network: use --host to expose
   ➜  press h + enter to show help
+  
 Step #8: Once you get a succeful notification on both your back and front ends of successful deployment of both API server and React.js at the front end, proceed to web browser and enter in: http://localhost:8000/ in your web browser and it should land you at the home page of Nickel Nomad!
 Step #9: Create a new budget with a new item rows and budgetName in the budget calculator page, then head to MongoDBCompass to extract the budgetId you wish to update the budget for and paste into existingBudgetId in SaveFunctionality.jsx - Note that without this step, you will be constantly creating new budgets and not updating the intended budget. This feature will be patched in future patches.
 Step #10: And.. you should be all set! Thank you for using Nickel Nomad!
