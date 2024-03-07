@@ -34,10 +34,13 @@ const BudgetComponent = () => {
       );
 
       if (Array.isArray(response.data.data.items)) {
-        return response.data.data.items.map((item) => ({
+        let mappedItems = response.data.data.items.map((item) => ({
           ...item,
           isNew: false,
         }));
+        let output = { ...response.data.data, items: mappedItems };
+        console.log('result of spread: ' + output);
+        return output;
       } else {
         console.error(
           "Invalid response format - data is not an array:",
@@ -56,8 +59,10 @@ const BudgetComponent = () => {
       // Assuming the response includes budgetName directly or within a data object
       const fetchedBudgetName = data?.budgetName || ""; // Use a fallback empty string if undefined
 
-      setCollections(data);
+      setCollections(data.items);
 
+
+      console.log('data in useEffect after fetchInitialBudgetRows: ' + data.items)
       console.log('Budgetname in useEffect after fetchInitialBudgetRows: ' + fetchedBudgetName)
       setBudgetName(fetchedBudgetName);
     });
