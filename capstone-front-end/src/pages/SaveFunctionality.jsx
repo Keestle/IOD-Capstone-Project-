@@ -1,9 +1,23 @@
 import axios from "axios";
 
-const saveBudget = async (rows, budgetName) => {
+const saveBudget = async (
+  rows,
+  budgetName,
+  existingBudgetId = "65e8139ae8d136442e7609d6"
+) => {
   try {
-    const url = "http://localhost:3000/api/budgetCalculator/create";
-    const method = "POST"; // Assuming it's an update; change as needed
+    let url;
+    let method;
+
+    if (existingBudgetId) {
+      // If existingBudgetId is provided, it's an update (PUT request)
+      url = `http://localhost:3000/api/budgetCalculator/update/${existingBudgetId}`;
+      method = "PUT";
+    } else {
+      // If existingBudgetId is not provided, it's a new budget (POST request)
+      url = "http://localhost:3000/api/budgetCalculator/create";
+      method = "POST";
+    }
 
     const formattedData = {
       budgetName: budgetName,
@@ -31,4 +45,5 @@ const saveBudget = async (rows, budgetName) => {
     // Optionally, handle errors and update your UI or show a notification
   }
 };
+
 export default saveBudget;

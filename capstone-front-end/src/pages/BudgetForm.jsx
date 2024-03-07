@@ -28,7 +28,7 @@ const BudgetComponent = () => {
   // Fetch function for budget rows from my budget.
   const fetchInitialBudgetRows = async () => {
     try {
-      const budgetId = "65e524faa43d27e6815b9e89";
+      const budgetId = "65e8139ae8d136442e7609d6";
       const response = await axios.get(
         `http://localhost:3000/api/budgetCalculator/${budgetId}`
       );

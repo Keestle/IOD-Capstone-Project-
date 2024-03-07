@@ -61,7 +61,7 @@ function EditToolbar(props) {
   const handleSaveClick = async () => {
     try {
       await saveBudget(rows, budgetName);
-      // Optionally update UI or perform actions on successful save
+      console.log("Budget saved successfully!");
     } catch (error) {
       console.error("Error during save:", error.message);
       // Optionally handle errors and update UI or show a notification
@@ -73,7 +73,7 @@ function EditToolbar(props) {
     <GridToolbarContainer>
       <Box sx={{ flexGrow: 1 }}>
         <TextField
-          label="Enter budget name"
+          label="Give your Budget a Name!"
           variant="outlined"
           style={{ marginRight: "350px" }}
           value={localBudgetName}

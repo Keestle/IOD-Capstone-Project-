@@ -36,6 +36,17 @@ router.put("/update", (req, res) => {
   Controllers.budgetCalculatorController.updateBudget(req.body, res);
 });
 
+// Update if "_id" is passed within the request body.
+router.put("/update/:id", (req, res) => {
+  Controllers.budgetCalculatorController.updateBudget(
+    {
+      _id: req.params.id,
+      updatedData: req.body,
+    },
+    res
+  );
+});
+
 router.delete("/:id", (req, res) => {
   Controllers.budgetCalculatorController.deleteBudget(req, res);
 });
