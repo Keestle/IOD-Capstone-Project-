@@ -55,6 +55,28 @@ const updateBudget = (newData, res) => {
     });
 };
 
+// Updating with _id attached in the URL
+const updateBudgetURL = (requestData, res) => {
+  const { _id, updatedData } = requestData;
+
+  // Check if _id is provided in the URL or the request body
+  const query = _id ? { _id } : { _id: updatedData._id };
+
+  Models.budgetCalculator
+    .findOneAndUpdate(query, updatedData, { new: true })
+    .then((updatedBudget) => {
+      if (!updatedBudget) {
+        res.send({ result: 404, error: "No budget with this Id found." });
+      } else {
+        res.send({ result: 200, data: updatedBudget });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send({ result: 500, error: err.message });
+    });
+};
+
 //D - Delete the budget
 const deleteBudget = (req, res) => {
   Models.budgetCalculator
@@ -77,5 +99,6 @@ module.exports = {
   getBudget,
   getBudgetbyId,
   updateBudget,
+  updateBudgetURL,
   deleteBudget,
 };
